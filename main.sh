@@ -21,6 +21,10 @@ main() {
         args+=(--wait "${INPUT_WAIT}")
     fi
 
+    if [[ -n "${INPUT_KUBECONFIG:-}" ]]; then
+        args+=(--kubeconfig "${INPUT_KUBECONFIG}")
+    fi
+
     chmod +x "$SCRIPT_DIR/install.sh"
     
     "$SCRIPT_DIR/install.sh" "${args[@]}"

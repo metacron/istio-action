@@ -20,6 +20,7 @@ EOF
 main() {
     local version="$DEFAULT_ISTIO_VERSION"
     local profile="$DEFAULT_ISTIO_PROFILE"
+    local kubeconfig=""
     local wait=60s
 
     parse_command_line "$@"
@@ -67,6 +68,16 @@ parse_command_line() {
                     exit 1
                 fi
                 ;;
+            -k|--kubeconfig)
+                if [[ -n "${2:-}" ]]; then
+                    kubeconfig="$2"
+                    shift
+                else
+                    echo "ERROR: '-k|--kubeconfig' cannot be empty." >&2
+                    show_help
+                    exit 1
+                fi
+                ;;
             *)
                 break
                 ;;
@@ -86,13 +97,13 @@ download_istio() {
 
 install_istio() {
     echo 'Installing Istio...'
-    istioctl install --set profile=$profile -y
-    kubectl -n istio-system wait pods --selector=app=istio-ingressgateway --for=condition=Ready --timeout=$wait
+    istioctl install --kubeconfig=$kubeconfig --set profile=$profile -y
+    kubectl --kubeconfig=$kubeconfig -n istio-system wait pods --selector=app=istio-ingressgateway --for=condition=Ready --timeout=$wait
 }
 
 inject_istio() {
     echo 'Inject Istio in default namespace...'
-    kubectl label namespace default istio-injection=enabled
+    kubectl --kubeconfig=$kubeconfig label namespace default istio-injection=enabled
 }
 
 main "$@"
