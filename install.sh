@@ -103,7 +103,7 @@ install_istio() {
 
 inject_istio() {
     echo 'Inject Istio in default namespace...'
-    kubectl --kubeconfig=$kubeconfig label namespace default istio-injection=enabled
+    kubectl --kubeconfig=$kubeconfig --overwrite=true label namespace default istio-injection=enabled
 }
 
 main "$@"
