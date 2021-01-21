@@ -11,6 +11,8 @@ inputs:
     description: "The Istio profile to use (default: 'default')"  
   wait:
     description: "The duration to wait for the Istio RCD's to become ready (default: 60s)"
+  kubeconfig:
+    description: "Path to kubeconfig"
 runs:
   using: "node12"
   main: "main.js"
